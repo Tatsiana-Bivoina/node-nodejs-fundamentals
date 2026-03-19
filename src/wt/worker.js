@@ -4,6 +4,16 @@ import { parentPort } from 'worker_threads';
 // Sort in ascending order
 // Send back to main thread
 
+if (!parentPort) {
+  throw new Error('Worker must be run as a worker thread');
+}
+
 parentPort.on('message', (data) => {
-  // Write your code here
+  if (!Array.isArray(data)) {
+    parentPort.postMessage([]);
+    return;
+  }
+
+  const sorted = [...data].sort((a, b) => Number(a) - Number(b));
+  parentPort.postMessage(sorted);
 });
